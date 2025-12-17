@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceInvaders</title>
+
+	<link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+	<link rel="android-icon" sizes="192x192" href="assets/icons/android-chrome-192x192.png">
+	<link rel="android-icon" sizes="512x512" href="assets/icons/android-chrome-512x512.png">
+	<link rel="manifest" href="assets/icons/site.webmanifest">
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <div id="ui">
+            <div>Score: <span id="score">0</span></div>
+            <div id="livesContainer">Vies: <span id="lives"></span></div>
+        </div>
+
+        <div id="startScreen">
+            <div class="start-title">SPACE INVADERS</div>
+
+            <div class="mode-selection">
+                <p class="mode-question">JOUER EN PLEIN ECRAN ?</p>
+                <div class="mode-buttons">
+                    <button id="btnYes" class="start-btn">OUI</button>
+                    <button id="btnNo" class="start-btn">NON</button>
+                </div>
+                <p class="mode-info">(Plus d'ennemis en plein écran !)</p>
+            </div>
+
+            <div class="start-instructions">
+                <p>Déplacement : Flèches ou ZQSD</p>
+                <p>Tir : ESPACE</p>
+                <p>Pause : ECHAP</p>
+            </div>
+        </div>
+
+        <div id="pauseScreen">
+            <div class="pause-title">PAUSE</div>
+            <button id="resumeButton" class="pause-btn">REPRENDRE</button>
+            <button id="restartButton" class="pause-btn">MENU PRINCIPAL</button>
+        </div>
+
+        <div id="gameOver">
+            <div>GAME OVER</div>
+            <p>Score Final: <span id="finalScore">0</span></p>
+            <p style="font-size: 14px; margin-top: 20px;">Appuyez sur ESPACE pour revenir au menu</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>DÉVELOPPÉ PAR GOKEN-0</p>
+    </footer>
+
+    <div id="mobileControls">
+        <button id="shootBtn">TIR</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

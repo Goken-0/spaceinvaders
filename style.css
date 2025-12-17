@@ -1,0 +1,296 @@
+/* ============================================
+   SPACE INVADERS - STYLE AUTONOME (FULL CYAN)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Press Start 2P', cursive, monospace;
+}
+
+body {
+    background: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    color: white;
+}
+
+/* --- CONTENEUR --- */
+#gameContainer {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    /* Lueur cyan autour du cadre */
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+    background: #000;
+    transition: width 0.3s, height 0.3s;
+}
+
+#gameContainer:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    border: 3px solid #00ffff; /* Bordure Cyan */
+    background: linear-gradient(to bottom, #000 0%, #02020a 100%);
+    display: block;
+}
+
+#gameContainer:fullscreen #gameCanvas {
+    border: none;
+}
+
+/* --- UI --- */
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #00ffff;
+    font-size: 20px;
+    text-shadow: 0 0 10px #00ffff;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#ui div { margin-bottom: 10px; }
+
+.heart-icon {
+    color: #ff0000; /* Les cœurs restent rouges pour le contraste */
+    text-shadow: 0 0 10px #ff0000;
+    margin-left: 5px;
+}
+
+/* --- ÉCRANS --- */
+#startScreen, #pauseScreen, #gameOver {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    text-align: center;
+}
+
+#startScreen { display: flex; }
+#pauseScreen, #gameOver { display: none; }
+
+.start-title, .pause-title {
+    font-size: 40px;
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+    margin-bottom: 40px;
+}
+
+.pause-title, #gameOver div:first-child {
+    color: #ff0000; /* Game Over / Pause en Rouge */
+    text-shadow: 0 0 20px #ff0000;
+}
+
+#gameOver div:first-child {
+    font-size: 50px;
+    margin-bottom: 30px;
+}
+
+/* --- BOUTONS MENU --- */
+.start-btn, .pause-btn {
+    font-size: 16px;
+    padding: 15px 30px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 10px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.start-btn:hover, .pause-btn:hover {
+    background: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 30px #00ffff;
+    transform: scale(1.05);
+}
+
+/* --- TEXTES & INSTRUCTIONS (CORRECTION ICI) --- */
+.mode-question {
+    color: #00ffff !important; /* Force le Cyan */
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.mode-info {
+    color: #00ffff !important; /* Force le Cyan */
+    opacity: 0.8;
+    font-size: 10px;
+    margin-top: 15px;
+    font-style: italic;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+.start-instructions, .pause-instructions {
+    margin-top: 40px;
+    width: 100%;
+    text-align: center;
+}
+
+.start-instructions p, .pause-instructions p {
+    font-size: 12px;
+    color: #00ffff !important; /* Force le Cyan au lieu du blanc/gris */
+    text-shadow: 0 0 8px #00ffff; /* Ajout de la lueur */
+    margin: 10px 0;
+    line-height: 1.8;
+    width: 100%;
+    text-align: center;
+}
+
+/* GAME OVER TEXTE */
+#gameOver p {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    color: #00ffff !important; /* Force le Cyan */
+    text-shadow: 0 0 10px #00ffff;
+    margin: 15px 0;
+}
+
+/* --- BOUTONS FLOTTANTS --- */
+.game-btn {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.cyan-style {
+    background: rgba(0, 255, 255, 0.2);
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+.cyan-style:hover {
+    background: rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 25px #00ffff;
+    transform: scale(1.1);
+}
+
+.red-style {
+    background: rgba(255, 0, 0, 0.2);
+    border: 2px solid #ff0000;
+    color: #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+.red-style:hover {
+    background: rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 25px #ff0000;
+    transform: scale(1.1);
+}
+
+/* PANNEAU CUSTOMISATION */
+#customPanel {
+    font-family: 'Press Start 2P', cursive;
+}
+
+/* --- SLIDER VOLUME --- */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    margin: 10px 0;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: rgba(0, 255, 255, 0.4);
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #00ffff;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #00ffff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -6px;
+    box-shadow: 0 0 15px #00ffff;
+}
+
+/* --- FOOTER --- */
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+footer p {
+    color: #ffffff;
+    font-size: 12px;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace !important; 
+    font-weight: bold;
+}
+
+/* --- MOBILE --- */
+#mobileControls {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: none;
+}
+
+#shootBtn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 0, 0.2);
+    border: 3px solid #ffff00;
+    color: #ffff00;
+    font-family: 'Press Start 2P';
+    box-shadow: 0 0 15px #ffff00;
+}
+
+@media (max-width: 768px) {
+    #gameContainer { width: 100vw; height: 100vh; box-shadow: none; border: none; }
+    #mobileControls { display: block; }
+    .start-title { font-size: 30px; }
+}
