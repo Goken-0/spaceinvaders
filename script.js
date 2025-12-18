@@ -1,42 +1,40 @@
 /**
  * ============================================
- * JEU SPACE INVADERS (FINAL - CYBERPUNK CYANTHEME)
+ * JEU SPACE INVADERS (FINAL - SPAWN CENTER FIX)
  * ============================================
  */
 
-// Configuration des couleurs
+// Configuration Couleurs (CYAN THEME)
 let colors = {
-    player: '#00ffff',      // Cyan pur
-    enemy: '#ff00eaff',     // Magenta néon
-    miniboss: '#ffaa00',    // Orange néon
-    boss: '#ff0000',        // Rouge néon
-    border: '#00ffff'       // Cyan pur
+    player: '#00ffff',      
+    enemy: '#ff00eaff',
+    miniboss: '#ffaa00',
+    boss: '#ff0000',
+    border: '#00ffff'       
 };
 
-// GESTION DU VOLUME GLOBAL
+// GESTION AUDIO
 let globalVolume = 0.5;
-
 const music = new Audio('assets/music/galacticknight.mp3');
 music.loop = true;        
 music.volume = globalVolume;
 
-// Variable d'état
 let shouldResumeMusic = false;
 let isBigMode = false;
 
-// UI: Panneau Personnalisation + VOLUME
+// UI: PANNEAU PERSONNALISATION & VOLUME
 const customPanel = document.createElement('div');
 customPanel.id = 'customPanel';
-// Style du panneau avec bordure cyan
+// AJOUT: font-family forcé ici aussi
 customPanel.style.cssText = `
     position: fixed; top: 50%; right: -300px; transform: translateY(-50%); width: 300px;
     background: rgba(0, 10, 20, 0.98); border: 2px solid #00ffff; border-right: none;
     border-radius: 10px 0 0 10px; padding: 20px; z-index: 2000; transition: right 0.3s;
-    box-shadow: -5px 0 30px rgba(0, 255, 255, 0.2);
+    box-shadow: -5px 0 30px rgba(0, 255, 255, 0.2); font-family: 'Press Start 2P', cursive;
 `;
 
 customPanel.innerHTML = `
-    <h3 style="color: #00ffff; font-size: 14px; margin-bottom: 20px; text-align: center; text-shadow: 0 0 10px #00ffff;">REGLAGES</h3>
+    <h3 style="color: #00ffff; font-size: 14px; margin-bottom: 20px; text-align: center; text-shadow: 0 0 10px #00ffff;">RÉGLAGES</h3>
     
     <div style="margin-bottom: 20px;">
         <label style="color: #00ffff; font-size: 10px; display: block; margin-bottom: 5px;">VOLUME</label>
@@ -53,18 +51,20 @@ customPanel.innerHTML = `
         <label style="color: #ff00eaff; font-size: 10px; display: block; margin-bottom: 10px;">Ennemis</label>
         <input type="color" id="enemyColor" value="#ff00ea" style="width: 100%; height: 40px; cursor: pointer; border: 2px solid #ff00eaff; background: transparent;">
     </div>
-    <button id="resetColors" style="width: 100%; padding: 10px; background: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000; color: #ff0000; font-size: 10px; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(255,0,0,0.3);">RESET COULEURS</button>
+    <button id="resetColors" style="width: 100%; padding: 10px; background: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000; color: #ff0000; font-size: 10px; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px rgba(255,0,0,0.3); font-family: 'Press Start 2P', cursive;">RESET COULEURS</button>
 `;
 document.body.appendChild(customPanel);
 
-// LOGIQUE DU SLIDER VOLUME
+// LOGIQUE SLIDER
 const volumeSlider = document.getElementById('volumeSlider');
-volumeSlider.addEventListener('input', (e) => {
-    globalVolume = parseFloat(e.target.value);
-    music.volume = globalVolume;
-});
+if(volumeSlider) {
+    volumeSlider.addEventListener('input', (e) => {
+        globalVolume = parseFloat(e.target.value);
+        music.volume = globalVolume;
+    });
+}
 
-// BOUTON PALETTE
+// BOUTON REGLAGES (Roue dentée)
 const togglePanelBtn = document.createElement('button');
 togglePanelBtn.innerHTML = '<i class="fas fa-cog"></i>';
 togglePanelBtn.className = 'game-btn cyan-style';
@@ -80,6 +80,7 @@ togglePanelBtn.addEventListener('click', () => {
     togglePanelBtn.style.right = panelOpen ? '320px' : '20px';
 });
 
+// EVENTS COULEURS
 document.getElementById('playerColor').addEventListener('input', (e) => { colors.player = e.target.value; });
 document.getElementById('enemyColor').addEventListener('input', (e) => { colors.enemy = e.target.value + 'ff'; });
 document.getElementById('resetColors').addEventListener('click', () => {
@@ -89,7 +90,7 @@ document.getElementById('resetColors').addEventListener('click', () => {
     document.getElementById('enemyColor').value = '#ff00ea';
 });
 
-// BOUTON MUSIQUE
+// BOUTON MUSIQUE (MUTE)
 const musicButton = document.createElement('button');
 musicButton.id = 'musicButton';
 musicButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -113,7 +114,7 @@ musicButton.addEventListener('click', () => {
     musicPlaying = !musicPlaying;
 });
 
-// GESTION CHANGEMENT D'ONGLET
+// VISIBILITY API (Pause auto si changement d'onglet)
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         if (musicPlaying) {
@@ -130,7 +131,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ============================================
-// LOGIQUE DE DÉMARRAGE
+// LOGIQUE DE DÉMARRAGE & FULLSCREEN
 // ============================================
 
 function startGameLogic() {
@@ -139,13 +140,24 @@ function startGameLogic() {
     gameActive = true;
     gamePaused = false;
     updateLivesDisplay();
+    
+    // 1. On redimensionne le canvas (Full screen ou Fenêtre)
     resizeCanvas();
+    
+    // 2. IMPORTANT : On repositionne le joueur APRES le redimensionnement
+    // Centré horizontalement et à 80px du bas
+    player.x = canvas.width / 2 - player.width / 2;
+    player.y = canvas.height - 80;
+
+    // 3. On fait apparaître les ennemis
     spawnEnemies();
 }
 
+// OUI : Plein écran
 document.getElementById('btnYes').addEventListener('click', function () {
     const gameContainer = document.getElementById('gameContainer');
     gameContainer.requestFullscreen().then(() => {
+        // Petit délai pour laisser le temps au navigateur de passer en plein écran
         setTimeout(() => {
             isBigMode = true; 
             startGameLogic(); 
@@ -157,6 +169,7 @@ document.getElementById('btnYes').addEventListener('click', function () {
     });
 });
 
+// NON : Fenêtré
 document.getElementById('btnNo').addEventListener('click', function () {
     if (document.fullscreenElement) {
         document.exitFullscreen().catch(err => console.log(err));
@@ -165,6 +178,7 @@ document.getElementById('btnNo').addEventListener('click', function () {
     startGameLogic();
 });
 
+// Gestion boutons pause/restart
 document.getElementById('resumeButton').addEventListener('click', function () {
     document.getElementById('pauseScreen').style.display = 'none';
     gamePaused = false;
@@ -185,9 +199,16 @@ document.addEventListener('keydown', function (e) {
             document.getElementById('pauseScreen').style.display = 'none';
         }
     }
+    // Rejouer depuis Game Over
+    if (e.code === 'Space' && !gameActive && document.getElementById('gameOver').style.display === 'flex') {
+        e.preventDefault();
+        resetGame();
+    }
 });
 
-// INITIALISATION CANVAS
+// ============================================
+// MOTEUR DU JEU
+// ============================================
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -195,7 +216,6 @@ const livesEl = document.getElementById('lives');
 const gameOverEl = document.getElementById('gameOver');
 const finalScoreEl = document.getElementById('finalScore');
 
-// SYSTÈME AUDIO
 let audioCtx = null;
 let noiseBuffer = null; 
 
@@ -250,6 +270,7 @@ function playHitSound() {
     noiseGain.gain.setValueAtTime(0.3 * globalVolume, audioCtx.currentTime);
     noiseGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
     noiseSource.start(audioCtx.currentTime);
+    
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     oscillator.connect(gainNode);
@@ -297,7 +318,7 @@ function playGameOverSound() {
     });
 }
 
-// CLASSES
+// Classes
 class Player {
     constructor() {
         this.width = 40;
@@ -656,8 +677,10 @@ if (window.innerWidth <= 768) {
 
 function resetGame() {
     player = new Player();
+    // REPOSITIONNEMENT DU JOUEUR AU RESET (FIX SPAWN)
     player.x = canvas.width / 2 - player.width / 2;
     player.y = canvas.height - 80;
+    
     bullets = [];
     enemyBullets = [];
     particles = [];
@@ -777,7 +800,6 @@ function update() {
 function playerHit() {
     lives--;
     updateLivesDisplay();
-    // Explosion CYAN quand le joueur est touché
     createExplosion(player.x + player.width / 2, player.y + player.height / 2, '#00ffff');
     playHitSound(); 
     invulnerable = true;
